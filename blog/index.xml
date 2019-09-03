@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogs on Wayne Choi</title>
+    <link>http://example.org/blog/</link>
+    <description>Recent content in Blogs on Wayne Choi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 21 Aug 2018 15:22:37 -0700</lastBuildDate>
+    
+	<atom:link href="http://example.org/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Gradual Types In Elixir</title>
+      <link>http://example.org/gradual-types-in-elixir/</link>
+      <pubDate>Tue, 21 Aug 2018 15:22:37 -0700</pubDate>
+      
+      <guid>http://example.org/gradual-types-in-elixir/</guid>
+      <description>Elixir isn&amp;rsquo;t a statically typed language but with structs, schemas, and pattern matching along with a robust, built-in test suite you have a toolbox that allows for gradual typing.
+To illustrate gradual typing we&amp;rsquo;ll walk through an example of creating a user login with the parameters username, email_address and age. For this example, we&amp;rsquo;ll print a message with parameters: username: #{params[&amp;quot;username&amp;quot;]}, email_address: #{params[&amp;quot;email_address&amp;quot;]}, next_year_age: #{next_year_age} where next_year_age is age plus one.</description>
+    </item>
+    
+    <item>
+      <title>Using Genetic Algorithms To Search For Trading Signals</title>
+      <link>http://example.org/using-genetic-algorithms-to-search-for-trading-signals/</link>
+      <pubDate>Mon, 16 Jul 2018 15:05:02 -0700</pubDate>
+      
+      <guid>http://example.org/using-genetic-algorithms-to-search-for-trading-signals/</guid>
+      <description>Motivation When applying machine learning to financial markets most quantitative research focus on optimization algorithms for user defined features. This approach raises two issues. One is that the user needs to have deep domain knowledge in order to generate and define features. The second, related issue occurs when the act of gaining domain knowledge prejudices the researcher about what features may or may not work. In this walkthrough, we consider an alternative approach where we start with the assumption that the researcher has no knowledge of what works but in the entire universe of trading strategies there is a strategy that does work.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>programming on Wayne Choi</title>
+    <link>http://example.org/tags/programming/</link>
+    <description>Recent content in programming on Wayne Choi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 21 Aug 2018 15:22:37 -0700</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Gradual Types In Elixir</title>
+      <link>http://example.org/gradual-types-in-elixir/</link>
+      <pubDate>Tue, 21 Aug 2018 15:22:37 -0700</pubDate>
+      
+      <guid>http://example.org/gradual-types-in-elixir/</guid>
+      <description>Elixir isn&amp;rsquo;t a statically typed language but with structs, schemas, and pattern matching along with a robust, built-in test suite you have a toolbox that allows for gradual typing.
+To illustrate gradual typing we&amp;rsquo;ll walk through an example of creating a user login with the parameters username, email_address and age. For this example, we&amp;rsquo;ll print a message with parameters: username: #{params[&amp;quot;username&amp;quot;]}, email_address: #{params[&amp;quot;email_address&amp;quot;]}, next_year_age: #{next_year_age} where next_year_age is age plus one.</description>
+    </item>
+    
+  </channel>
+</rss>
