@@ -6,6 +6,7 @@
   <link rel="stylesheet" 
   href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css" 
   crossorigin="anonymous">
+  <link rel="stylesheet" href="/resources/_gen/assets/syntax.css">
   <style>
     p {
       font-family: "Times New Roman", Times, serif;
@@ -13,7 +14,7 @@
   </style>
   <title>Using Genetic Algorithms To Search For Trading Signals</title>
 </head>  
-  <body style="padding-bottom: 50px; padding: 8px;">
+  <body style="margin-bottom: 100px; padding: 8px;">
     <div class="container" style="margin-bottom: 30px; margin-top: 10px">
   <div class="level">
     <div class="level-left">
@@ -55,18 +56,17 @@
 
 <p>For this example we make the following assumptions</p>
 
-<pre><code class="language-python">target ticker =  Nasdaq 100
-ticker symbols = [&quot;AAPL&quot;, &quot;GOOG&quot;, &quot;AMZN&quot;, &quot;QQQQ&quot;, &quot;WFC&quot;]
-statements = [&quot;::&lt;stmnt&gt;&quot;, &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;]
-strategy_fragments = [
-  &quot;strategy-a:&lt;ticker&gt;:&lt;param&gt;&quot;,
-  &quot;strategy-b:&lt;ticker&gt;:&lt;param&gt;&quot;,  
-  &quot;strategy-c:&lt;ticker&gt;:&lt;param&gt;&quot;,  
-  &quot;strategy-d:&lt;ticker&gt;:&lt;param&gt;&quot;
-]  
-genotype = [71, 20, 84, 226, 154, 252, 99, 256, 230, 126, 229, 110]
-phenotype = &quot;&lt;code&gt;&quot;
-</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">target</span> <span class="n">ticker</span> <span class="o">=</span>  <span class="n">Nasdaq</span> <span class="mi">100</span>
+<span class="n">ticker</span> <span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;AAPL&#34;</span><span class="p">,</span> <span class="s2">&#34;GOOG&#34;</span><span class="p">,</span> <span class="s2">&#34;AMZN&#34;</span><span class="p">,</span> <span class="s2">&#34;QQQQ&#34;</span><span class="p">,</span> <span class="s2">&#34;WFC&#34;</span><span class="p">]</span>
+<span class="n">statements</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;::&lt;stmnt&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span><span class="p">]</span>
+<span class="n">strategy_fragments</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;&#34;</span><span class="p">,</span>
+  <span class="s2">&#34;strategy-b:&lt;ticker&gt;:&lt;param&gt;&#34;</span><span class="p">,</span>  
+  <span class="s2">&#34;strategy-c:&lt;ticker&gt;:&lt;param&gt;&#34;</span><span class="p">,</span>  
+  <span class="s2">&#34;strategy-d:&lt;ticker&gt;:&lt;param&gt;&#34;</span>
+<span class="p">]</span>  
+<span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">71</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">,</span> <span class="mi">154</span><span class="p">,</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">110</span><span class="p">]</span>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;code&gt;&#34;</span></code></pre></div>
 
 <p>The target ticker is the security for which we are trying to find winning trading strategies for. Tickers symbols represent the pool of securities that we&rsquo;ll use in our trading strategies. Statements represent building blocks from which to generate our trading strategies. Strategy fragments represent our trading strategies with parameters separated by colons and braced between arrow braces. The genotype represents the sample array while <code>&lt;code&gt;</code> initializes our phenotype.</p>
 
@@ -74,14 +74,13 @@ phenotype = &quot;&lt;code&gt;&quot;
 
 <h4 id="map-statement">Map Statement</h4>
 
-<pre><code class="language-python">genotype = [70, 20, 84, 226]
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">]</span>
 
-phenotype = &quot;&lt;code&gt;&quot;
-71 % 2 = 1
-statements[1] = &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;
-phenotype.replace(&quot;&lt;code&gt;&quot;, &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;)
-phenotype == &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;
-</code></pre>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;code&gt;&#34;</span>
+<span class="mi">71</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">statements</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span>
+<span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;code&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span><span class="p">)</span>
+<span class="n">phenotype</span> <span class="o">==</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span></code></pre></div>
 
 <p>We initialize our strategy phenotype with <code>&lt;code&gt;</code>. The rule for statement is that <code>&lt;code&gt;</code> can be replaced with either <code>::&lt;code&gt;</code> or <code>&lt;stmnt&gt;::&lt;code&gt;</code> based on the first integer of our genotype. In this example, we take the first integer <code>71</code> and calculate <code>71 % 2 = 1</code> since length of <code>statements</code> is two. Since <code>71 % 2</code> leaves us with <code>1</code> we replace <code>&lt;code&gt;</code> with <code>&lt;stmnt&gt;::&lt;code&gt;</code> or the second item in the <code>statements</code> array.</p>
 
@@ -89,35 +88,32 @@ phenotype == &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;
 
 <h4 id="map-strategy">Map Strategy</h4>
 
-<pre><code class="language-python">genotype = [70, 20, 84, 226]
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">]</span>
 
-phenotype = &quot;&lt;stmnt&gt;::&lt;code&gt;&quot;
-20 % 4 = 0
-strategy_fragments[0] = &quot;strategy-a:&lt;ticker&gt;:&lt;param&gt;&quot;
-phenotype.replace(&quot;&lt;stmnt&gt;&quot;, &quot;strategy-a:&lt;ticker&gt;:&lt;param&gt;&quot;)
-phenotype = &quot;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&quot;
-</code></pre>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span>
+<span class="mi">20</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">strategy_fragments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;&#34;</span>
+<span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;stmnt&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;&#34;</span><span class="p">)</span>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&#34;</span></code></pre></div>
 
 <p>If <code>&lt;stmnt&gt;</code> exists, we replace it with a strategy fragment which includes the code for the trading strategy, a ticker symbol for the security that the strategy will be applied to and a numeric parameter. In picking the strategy fragment, we take the integer in the genotype and take the modulus of the length of the strategies.</p>
 
 <h4 id="map-ticker">Map Ticker</h4>
 
-<pre><code class="language-python">phenotype = &quot;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&quot;
-84 % 5 = 4
-tickers[4] = &quot;WFC&quot;
-phenotype.replace(&quot;&lt;ticker&gt;&quot;, &quot;WFC&quot;)
-phenotype = &quot;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&quot;
-</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&#34;</span>
+<span class="mi">84</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">tickers</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;WFC&#34;</span>
+<span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;ticker&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;WFC&#34;</span><span class="p">)</span>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&#34;</span></code></pre></div>
 
 <p>If <code>&lt;ticker&gt;</code> exists, we replace it with a ticker symbol from the ticker symbols list.</p>
 
 <h4 id="map-parameter">Map Parameter</h4>
 
-<pre><code class="language-python">phenotype = &quot;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&quot;
-params = 225
-phenotype.replace(&quot;&lt;param&gt;&quot;, &quot;225&quot;)
-phenotype = &quot;strategy-a:WFC:225::&lt;code&gt;&quot;
-</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&#34;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="mi">225</span>
+<span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;param&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;225&#34;</span><span class="p">)</span>
+<span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:225::&lt;code&gt;&#34;</span></code></pre></div>
 
 <p>If <code>&lt;param&gt;</code> exists, we replace it with the value of the integer in the genotype. Here we just use the value of the integer. Since we are just using the value of the integer, careful consideration should be given to the range of integers from which we randomly pick.</p>
 
@@ -129,20 +125,18 @@ phenotype = &quot;strategy-a:WFC:225::&lt;code&gt;&quot;
 
 <p>In determining how to rank the phenotypes our primary goal is to ensure that fitter phenotypes have a higher chance of mating. We chose to rank the phenotypes in rank order based on the percentage of winning trades. In generating the mating population we use the phenotypes rank as a proxy for fitness and then use that rank to determine each phenotypes population in the pool. By way of example, if we limit the potential phenotypes for the mating pool to the 500 fittest phenotypes, the mating pool will have 125,250 phenotypes of which 500 will be the fittest phenotype. As a result, the fittest phenotype will have a 0.04% chance of being selected when randomly selecting phenotypes for the next generation.</p>
 
-<pre><code class="language-python">Pool Size
-n * (n + 1) / 2
-500 * (501) / 2 = 125,250
-</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Pool</span> <span class="n">Size</span>
+<span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="mi">500</span> <span class="o">*</span> <span class="p">(</span><span class="mi">501</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">125</span><span class="p">,</span><span class="mi">250</span></code></pre></div>
 
 <h3 id="crossover">Crossover</h3>
 
 <p>To perform the crossover we randomly pick two genotypes from the mating pool then pick a random slice point in the genotype. In our example, since each genotype is an array of length 12 we pick a random number between 0 and 11. We slice the genotype to the left of the slice point of the first genotype that was picked and slice to the right of the slice point of the second genotype we picked. We then splice the sliced genotypes to generate the offspring.</p>
 
-<pre><code class="language-python">x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-y = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
-slice_point = 4
-xy = [1, 2, 3, 4, 5, 25, 26, 27, 28, 29, 30, 31]
-</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
+<span class="n">slice_point</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span></code></pre></div>
 
 <h3 id="mutation">Mutation</h3>
 
