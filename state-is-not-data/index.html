@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" style="background-color: #fffff3">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css" 
+  crossorigin="anonymous">
+  <link rel="stylesheet" href="/resources/gen/assets/syntax.css">
+  <style>
+    p {
+      font-family: "Times New Roman", Times, serif;
+    }
+  </style>
+  <title>State Is Not Data</title>
+</head>  
+  <body style="margin-bottom: 100px; padding: 8px;">
+    <div class="container" style="margin-bottom: 30px; margin-top: 10px">
+  <div class="level">
+    <div class="level-left">
+      <a href="/" class="title is-4 has-text-danger">WayneChoi</a>
+    </div>
+    <div class="level-right">
+      
+    </div>
+  </div>
+</div>
+    <div class="container">
+      <main id="main" class="content">
+       
+    <h2 class="subtitle is-5 has-text-grey">September 25, 2019</h2>
+    <h1 class="title is-3">State Is Not Data</h1>
+    <p>Differentiating between data and state leads to cleaner code. What&rsquo;s the difference? When you instantiate and object with data you create an object with state.</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">User</span> <span class="p">{</span>
+  <span class="n">constructor</span><span class="p">(</span><span class="n">dataJson</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">dataJson</span><span class="o">.</span><span class="n">fname</span><span class="p">;</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">lname</span> <span class="o">=</span> <span class="n">dataJson</span><span class="o">.</span><span class="n">lname</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">newUser</span> <span class="o">=</span> <span class="n">new</span> <span class="n">User</span><span class="p">({</span><span class="n">fname</span><span class="p">:</span> <span class="s2">&#34;Jack&#34;</span><span class="p">,</span> <span class="n">lname</span><span class="p">:</span> <span class="s2">&#34;Frost&#34;</span><span class="p">})</span></code></pre></div>
+
+<p>The object <code>newUser</code> is an object with the state <code>fname = Jack</code> and <code>lname = Frost</code>. Data, in this example, is the json object.</p>
+
+<p>Let&rsquo;s say we need to generate the User&rsquo;s full name. Object oriented programming would have us add a method to <code>User</code> to concantenate <code>fname</code> and <code>lname</code>.  You can skip instantiating the object and just operate on the data like so:</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">jsonUser</span> <span class="o">=</span> <span class="p">{</span><span class="n">fname</span><span class="p">:</span> <span class="s2">&#34;Jack&#34;</span><span class="p">,</span> <span class="n">lname</span><span class="p">:</span> <span class="s2">&#34;Frost&#34;</span><span class="p">}</span>
+
+<span class="n">function</span> <span class="n">fullName</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">fname</span> <span class="o">+</span> <span class="s2">&#34; &#34;</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">lname</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">fullName</span><span class="p">(</span><span class="n">jsonUser</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&#34;Jack Frost&#34;</span></code></pre></div>
+
+<p><strong>Don&rsquo;t instantiate state just to operate on data.</strong></p>
+
+
+      </main>
+    </div>
+  </body>
+</html>

@@ -6,10 +6,21 @@
     <description>Recent content on Wayne Choi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 21 Aug 2018 15:22:37 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 25 Sep 2019 22:23:14 -0700</lastBuildDate>
     
 	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>State Is Not Data</title>
+      <link>http://example.org/state-is-not-data/</link>
+      <pubDate>Wed, 25 Sep 2019 22:23:14 -0700</pubDate>
+      
+      <guid>http://example.org/state-is-not-data/</guid>
+      <description>Differentiating between data and state leads to cleaner code. What&amp;rsquo;s the difference? When you instantiate and object with data you create an object with state.
+class User { constructor(dataJson) { this.fname = dataJson.fname; this.lname = dataJson.lname; } } newUser = new User({fname: &amp;#34;Jack&amp;#34;, lname: &amp;#34;Frost&amp;#34;}) The object newUser is an object with the state fname = Jack and lname = Frost. Data, in this example, is the json object.
+Let&amp;rsquo;s say we need to generate the User&amp;rsquo;s full name.</description>
+    </item>
     
     <item>
       <title>Gradual Types In Elixir</title>
