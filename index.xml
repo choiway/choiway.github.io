@@ -6,10 +6,20 @@
     <description>Recent content on Wayne Choi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Sep 2019 22:23:14 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 26 Sep 2019 13:14:12 -0700</lastBuildDate>
     
 	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data Objects</title>
+      <link>http://example.org/data-objects/</link>
+      <pubDate>Thu, 26 Sep 2019 13:14:12 -0700</pubDate>
+      
+      <guid>http://example.org/data-objects/</guid>
+      <description>Object oriented programming (&amp;ldquo;OOP&amp;rdquo;) gets a bad rap. Some of it is deserved but OOP does shines when you need to manage state. Check out genservers in Erlang to see the hoops you have to go through to manage state.
+You can avoid some of the pitfalls of OOP if you draw hard lines between state and data. One of the ways to draw a hard line between state and data is to only create methods in a class that operate on the objects state and returns the result.</description>
+    </item>
     
     <item>
       <title>State Is Not Data</title>
@@ -18,8 +28,7 @@
       
       <guid>http://example.org/state-is-not-data/</guid>
       <description>Differentiating between data and state leads to cleaner code. What&amp;rsquo;s the difference? When you instantiate and object with data you create an object with state.
-class User { constructor(dataJson) { this.fname = dataJson.fname; this.lname = dataJson.lname; } } newUser = new User({fname: &amp;#34;Jack&amp;#34;, lname: &amp;#34;Frost&amp;#34;}) The object newUser is an object with the state fname = Jack and lname = Frost. Data, in this example, is the json object.
-Let&amp;rsquo;s say we need to generate the User&amp;rsquo;s full name.</description>
+class User { constructor(dataJson) { this.fname = dataJson.fname; this.lname = dataJson.lname; } } newUser = new User({fname: &amp;#34;Jack&amp;#34;, lname: &amp;#34;Frost&amp;#34;})  The object newUser is an object with the state fname = Jack and lname = Frost. Data, in this example, is the json object.</description>
     </item>
     
     <item>
