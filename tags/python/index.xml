@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on Wayne Choi</title>
-    <link>http://example.org/tags/python/</link>
+    <link>https://choiway.github.io/tags/python/</link>
     <description>Recent content in python on Wayne Choi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 16 Jul 2018 15:05:02 -0700</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://choiway.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Using Genetic Algorithms To Search For Trading Signals</title>
-      <link>http://example.org/using-genetic-algorithms-to-search-for-trading-signals/</link>
+      <link>https://choiway.github.io/using-genetic-algorithms-to-search-for-trading-signals/</link>
       <pubDate>Mon, 16 Jul 2018 15:05:02 -0700</pubDate>
       
-      <guid>http://example.org/using-genetic-algorithms-to-search-for-trading-signals/</guid>
+      <guid>https://choiway.github.io/using-genetic-algorithms-to-search-for-trading-signals/</guid>
       <description>Motivation When applying machine learning to financial markets most quantitative research focus on optimization algorithms for user defined features. This approach raises two issues. One is that the user needs to have deep domain knowledge in order to generate and define features. The second, related issue occurs when the act of gaining domain knowledge prejudices the researcher about what features may or may not work. In this walkthrough, we consider an alternative approach where we start with the assumption that the researcher has no knowledge of what works but in the entire universe of trading strategies there is a strategy that does work.</description>
     </item>
     

@@ -28,10 +28,13 @@
     <div class="container">
       <main id="main" class="content">
        
-    <h1 class="title is-3">Data Objects</h1>
-    <h6 class="subtitle is-6 has-text-grey">September 26, 2019</h6>
+  <div class="columns">
+      <div class="column is-two-thirds">
 
-    <p>Object oriented programming (&ldquo;OOP&rdquo;) gets a bad rap. Some of it is deserved but OOP does shines when you need to manage state. Check out <em>genservers</em> in Erlang to see the hoops you have to go through to manage state.</p>
+      <h1 class="title is-3">Data Objects</h1>
+      <h6 class="subtitle is-6 has-text-grey">September 26, 2019</h6>
+
+      <p>Object oriented programming (&ldquo;OOP&rdquo;) gets a bad rap. Some of it is deserved but OOP does shines when you need to manage state. Check out <em>genservers</em> in Erlang to see the hoops you have to go through to manage state.</p>
 
 <p>You can avoid some of the pitfalls of OOP if you draw hard lines between state and data. One of the ways to draw a hard line between state and data is to only create methods in a class that operate on the objects state and returns the result. I refer to these as data objects.</p>
 
@@ -54,6 +57,23 @@
 </span></code></pre></div>
 
 <p>Notice that we do not mutate state and the method returns a result. Methods in a data object must return a result based on its state and should avoid side effects. Once you start introducing side effects the object is no longer a data object, it&rsquo;s something that&rsquo;s more difficult to debug.</p>
+
+    </div>
+    <div class="column">
+      <article class="message is-danger">
+        <div class="message-body">
+          Email questions, comments or corrections below
+        </div>
+      </article>
+      <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+      <script>
+        hbspt.forms.create({
+        portalId: "5108632",
+        formId: "c5eab82b-81e3-4acc-bfb3-e40cee3f9da3"
+      });
+      </script>
+    </div> 
+  </div>
 
 
       </main>
