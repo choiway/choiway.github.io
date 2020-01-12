@@ -6,10 +6,19 @@
     <description>Recent content on Wayne Choi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2019 00:25:35 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jan 2020 09:38:12 -0800</lastBuildDate>
     
 	<atom:link href="https://choiway.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>VIM-ify All Things with the Drop Alt Keyboard</title>
+      <link>https://choiway.github.io/drop-alt-keyboard/</link>
+      <pubDate>Sat, 11 Jan 2020 09:38:12 -0800</pubDate>
+      
+      <guid>https://choiway.github.io/drop-alt-keyboard/</guid>
+      <description>Vim all the things with the Drop Alt Keyboard. After writing code for the better part of five years in Vim and various code editors with Vim keybindings, I went back to a job where I spend a fair chunk of my time writing and editing in Outlook, Word and Excel. As I worked in these other apps I would often wish I had Vim navgiation keys. Microsoft applications do have navigation helpers with the CTRL + arrow keys but they require you to move your hand which, ergnomically, taxes my shoulder.</description>
+    </item>
     
     <item>
       <title>BEaM Stack</title>
