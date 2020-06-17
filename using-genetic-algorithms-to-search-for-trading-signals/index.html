@@ -37,32 +37,19 @@
 
 <h1 class="title is-3">Using Genetic Algorithms To Search For Trading Signals</h1>
 <h6 class="subtitle is-6 has-text-grey">July 16, 2018</h6>
-
-
 <h2 id="motivation">Motivation</h2>
-
 <p>When applying machine learning to financial markets most quantitative research focus on optimization algorithms for user defined features.  This approach raises two issues. One is that the user needs to have deep domain knowledge in order to generate and define features. The second, related issue occurs when the act of gaining domain knowledge prejudices the researcher about what features may or may not <em>work</em>. In this walkthrough, we consider an alternative approach where we start with the assumption that the researcher has no knowledge of what <em>works</em> but in the entire universe of trading strategies there is a strategy that does <em>work</em>. This assumption frames the problem as a search problem as opposed to an optimization problem. Now the question for the researcher is how to approximate the entire universe of trading strategies which may be both intellectually and computationally impossible to generate. For similar problems, genetic algorithms have been used with good results. The following is a walk through of using a genetic algorithm in conjunction with grammatical evolution to generate trading strategies and find the fittest one.</p>
-
 <h2 id="solution-walkthrough">Solution Walkthrough</h2>
-
 <blockquote>
 <p>In biology a <em>genotype</em> is the set of genes an organism carries around while a <em>phenotype</em> is its observable characteristics.</p>
 </blockquote>
-
 <p>The implementation of genetic algorithms generally start with a randomly generated pool of genotypes that are scored for fitness. Once scored, you generate a new pool of the fittest genotypes from the initial pool, pick random pairs from the pool, mate the picked pairs and mutate the mated genotype. Each time we run this process we create a new generation of genotypes that are fitter than the previous generation. The final result is a pool of genotypes that can be ranked by score where the highest ranked genotype is the best solution to the problem.</p>
-
 <p>In order to use genetic algorithms we need to be able to map our genotypes to trading strategies. Here we use grammatical evolution to map our genotypes or program fragments that execute the backtest of the strategy. Grammatical evolution allows us to evolve trading strategies based on our specified grammar and domain knowledge.</p>
-
-<p>The following is a walkthrough of how we take an array (genotype) like <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]</code> to a trading strategy represented as <code>strategy-a:AAPL:12::strategy-b:GOOG:256</code> (phenotype).</p>
-
+<p>The following is a walkthrough of how we take an array like <code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]</code> and translate it to a trading strategy represented as <code>strategy-a:AAPL:12::strategy-b:GOOG:256</code> which can then be used to run a backtest.</p>
 <h3 id="generate-genotypes">Generate genotypes</h3>
-
 <p>We randomly generate 10,000 genotypes as an array of integers with length 12. This initial pool is used to generate the first generation of phenotypes.</p>
-
 <h3 id="generate-strategies-phenotypes">Generate Strategies (Phenotypes)</h3>
-
 <p>For this example we make the following assumptions</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">target</span> <span class="n">ticker</span> <span class="o">=</span>  <span class="n">Nasdaq</span> <span class="mi">100</span>
 <span class="n">ticker</span> <span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;AAPL&#34;</span><span class="p">,</span> <span class="s2">&#34;GOOG&#34;</span><span class="p">,</span> <span class="s2">&#34;AMZN&#34;</span><span class="p">,</span> <span class="s2">&#34;QQQQ&#34;</span><span class="p">,</span> <span class="s2">&#34;WFC&#34;</span><span class="p">]</span>
 <span class="n">statements</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;::&lt;stmnt&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span><span class="p">]</span>
@@ -74,27 +61,25 @@
 <span class="p">]</span>  
 <span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">71</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">,</span> <span class="mi">154</span><span class="p">,</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">110</span><span class="p">]</span>
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;code&gt;&#34;</span></code></pre></div>
-
-<p>The target ticker is the security for which we are trying to find winning trading strategies for. Tickers symbols represent the pool of securities that we&rsquo;ll use in our trading strategies. Statements represent building blocks from which to generate our trading strategies. Strategy fragments represent our trading strategies with parameters separated by colons and braced between arrow braces. The genotype represents the sample array while <code>&lt;code&gt;</code> initializes our phenotype.</p>
-
-<p>To generate a trade fragment we need four integers so our genotype of 12 integers can generate a strategy made up of 3 different trade fragments. To illustrate how we apply grammatical evolution we start with the first four integers of the assumed genotype or <code>[70, 20, 84, 226]</code>.</p>
-
+<p>The <code>target ticker</code> is the security which we are trying to find winning trading strategies for.</p>
+<p><code>tickers symbols</code> represent the pool of securities that we&rsquo;ll use in our trading strategies.</p>
+<p><code>statements</code> represent building blocks of primitive code that we&rsquo;ll use to generate our trading strategies. <code>strategy fragments</code> represent our trading strategies with parameters separated by colons and bracketed by arrow braces.</p>
+<p>The genotype represents the sample array which we use to generate our phenotype, a string of trading trading strategies. We parse the genotype to generate backtest</p>
+<p>while <code>&lt;code&gt;</code> initializes our phenotype.</p>
+<p>To generate a trade fragment we need four integers so our genotype of 12 integers can generate a strategy made up of 3 different trade fragments. To illustrate how we apply grammatical evolution we start with the first four integers of the assumed genotype or <code>[71, 20, 84, 226]</code>.</p>
 <h4 id="map-statement">Map Statement</h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">statements</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;::&lt;stmnt&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span><span class="p">]</span>
 
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">]</span>
+<span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">71</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">]</span>
 
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;code&gt;&#34;</span>
 <span class="mi">71</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">statements</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span>
+<span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span> <span class="o">=</span> <span class="n">statements</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;code&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span><span class="p">)</span>
 <span class="n">phenotype</span> <span class="o">==</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span></code></pre></div>
-
-<p>We initialize our strategy phenotype with <code>&lt;code&gt;</code>. The rule for statement is that <code>&lt;code&gt;</code> can be replaced with either <code>::&lt;code&gt;</code> or <code>&lt;stmnt&gt;::&lt;code&gt;</code> based on the first integer of our genotype. In this example, we take the first integer <code>71</code> and calculate <code>71 % 2 = 1</code> since length of <code>statements</code> is two. Since <code>71 % 2</code> leaves us with <code>1</code> we replace <code>&lt;code&gt;</code> with <code>&lt;stmnt&gt;::&lt;code&gt;</code> or the second item in the <code>statements</code> array.</p>
-
+<p>We initialize our strategy phenotype with <code>&lt;code&gt;</code>. The rule for <code>phonotype</code> is that <code>&lt;code&gt;</code> can be replaced with a value in <code>statements</code>. For our example, either <code>::&lt;stmnt&gt;</code> or <code>&lt;stmnt&gt;::&lt;code&gt;</code>. We replace the phenotype based on the first integer of our genotype. In this example, we take the first integer <code>71</code> mod it by <code>2</code>, the length of <code>statements</code>.  Since <code>71 % 2</code> leaves us with <code>1</code> we replace <code>&lt;code&gt;</code> with <code>&lt;stmnt&gt;::&lt;code&gt;</code> or the second item in the <code>statements</code> array.</p>
 <p>The string, <code>&lt;stmnt&gt;</code>, is what we use to encode the actual strategy fragment. The string <code>&lt;stmnt&gt;::&lt;code&gt;</code> allows for multiple strategy fragments which would make up the overall strategy.</p>
-
 <h4 id="map-strategy">Map Strategy</h4>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">genotype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">226</span><span class="p">]</span>
 
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;&lt;stmnt&gt;::&lt;code&gt;&#34;</span>
@@ -102,61 +87,39 @@
 <span class="n">strategy_fragments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;&#34;</span>
 <span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;stmnt&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;&#34;</span><span class="p">)</span>
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&#34;</span></code></pre></div>
-
 <p>If <code>&lt;stmnt&gt;</code> exists, we replace it with a strategy fragment which includes the code for the trading strategy, a ticker symbol for the security that the strategy will be applied to and a numeric parameter. In picking the strategy fragment, we take the integer in the genotype and take the modulus of the length of the strategies.</p>
-
 <h4 id="map-ticker">Map Ticker</h4>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:&lt;ticker&gt;:&lt;param&gt;::&lt;code&gt;&#34;</span>
 <span class="mi">84</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">tickers</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;WFC&#34;</span>
 <span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;ticker&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;WFC&#34;</span><span class="p">)</span>
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&#34;</span></code></pre></div>
-
 <p>If <code>&lt;ticker&gt;</code> exists, we replace it with a ticker symbol from the ticker symbols list.</p>
-
 <h4 id="map-parameter">Map Parameter</h4>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:&lt;param&gt;::&lt;code&gt;&#34;</span>
 <span class="n">params</span> <span class="o">=</span> <span class="mi">225</span>
 <span class="n">phenotype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;&lt;param&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;225&#34;</span><span class="p">)</span>
 <span class="n">phenotype</span> <span class="o">=</span> <span class="s2">&#34;strategy-a:WFC:225::&lt;code&gt;&#34;</span></code></pre></div>
-
 <p>If <code>&lt;param&gt;</code> exists, we replace it with the value of the integer in the genotype. Here we just use the value of the integer. Since we are just using the value of the integer, careful consideration should be given to the range of integers from which we randomly pick.</p>
-
 <h3 id="run-trading-strategies">Run trading strategies</h3>
-
 <p>For each phenotype, we decode the strategy and run a backtest. We&rsquo;ll use the results of the backtest as metadata to help us rank the fitness of the phenotype and the probability that it will mate for the next generation.</p>
-
 <h3 id="rank-strategies">Rank Strategies</h3>
-
 <p>In determining how to rank the phenotypes our primary goal is to ensure that fitter phenotypes have a higher chance of mating. We chose to rank the phenotypes in rank order based on the percentage of winning trades. In generating the mating population we use the phenotypes rank as a proxy for fitness and then use that rank to determine each phenotypes population in the pool. By way of example, if we limit the potential phenotypes for the mating pool to the 500 fittest phenotypes, the mating pool will have 125,250 phenotypes of which 500 will be the fittest phenotype. As a result, the fittest phenotype will have a 0.04% chance of being selected when randomly selecting phenotypes for the next generation.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Pool</span> <span class="n">Size</span>
 <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="mi">500</span> <span class="o">*</span> <span class="p">(</span><span class="mi">501</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">125</span><span class="p">,</span><span class="mi">250</span></code></pre></div>
-
 <h3 id="crossover">Crossover</h3>
-
 <p>To perform the crossover we randomly pick two genotypes from the mating pool then pick a random slice point in the genotype. In our example, since each genotype is an array of length 12 we pick a random number between 0 and 11. We slice the genotype to the left of the slice point of the first genotype that was picked and slice to the right of the slice point of the second genotype we picked. We then splice the sliced genotypes to generate the offspring.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span>
 <span class="n">slice_point</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">]</span></code></pre></div>
-
 <h3 id="mutation">Mutation</h3>
-
 <p>In order to maintain diversity, we cycle through each offspring array and probabilistically mutate each integer. A higher probability results in a higher probability of mutating that integer. Traditionally, in order to ensure that the algorithm is working toward higher fitness the probability of mutation is usually set low; less than 5%. However, since we&rsquo;re working with a probabilistic outcome as opposed to a discrete outcome we increase the probability of mutation to 20% to increase diversity. If a mutation is triggered we either increment the integer by 1 or decrement it by 1 based on a 50% probability.</p>
-
-<h3 id="rinse-repeat">Rinse / Repeat</h3>
-
+<h3 id="rinse--repeat">Rinse / Repeat</h3>
 <p>Once we have our new pool, we generate strategies and create a new pool. In this example we run three generations.</p>
-
 <h2 id="results">Results</h2>
-
 <p>The following table summarizes the results of this walkthrough when applied to two years of hourly Bitcoin data from different exchanges.</p>
-
 <table>
 <thead>
 <tr>
@@ -169,7 +132,6 @@
 <th align="right">Pct Winners</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>stdevd:krakenUSD:200::abovema:btcnCNY:70</td>
@@ -180,7 +142,6 @@
 <td align="right">1</td>
 <td align="right">0.6620209</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:94::abovema:btceUSD:220</td>
 <td align="center">17.309988</td>
@@ -190,7 +151,6 @@
 <td align="right">1</td>
 <td align="right">0.6533128</td>
 </tr>
-
 <tr>
 <td>abovema:btcnCNY:250::stdevd:krakenUSD:87</td>
 <td align="center">17.297611</td>
@@ -200,7 +160,6 @@
 <td align="right">3</td>
 <td align="right">0.6518724</td>
 </tr>
-
 <tr>
 <td>abovema:coinbaseEUR:221::stdevd:krakenUSD:82</td>
 <td align="center">6.5052958</td>
@@ -210,7 +169,6 @@
 <td align="right">3</td>
 <td align="right">0.6311239</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:200::abovema:bitstampUSD:195</td>
 <td align="center">9.935446</td>
@@ -220,7 +178,6 @@
 <td align="right">3</td>
 <td align="right">0.63085717</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:118::abovema:coinbaseUSD:227</td>
 <td align="center">6.5914254</td>
@@ -230,7 +187,6 @@
 <td align="right">2</td>
 <td align="right">0.6255187</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:182</td>
 <td align="center">7.4401746</td>
@@ -240,7 +196,6 @@
 <td align="right">3</td>
 <td align="right">0.6206273</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:214</td>
 <td align="center">6.7178283</td>
@@ -250,7 +205,6 @@
 <td align="right">1</td>
 <td align="right">0.62062615</td>
 </tr>
-
 <tr>
 <td>stdevd:krakenUSD:142</td>
 <td align="center">7.404855</td>
@@ -262,7 +216,6 @@
 </tr>
 </tbody>
 </table>
-
 <p>These results are raw and haven&rsquo;t been tested for randomness and does not include trading costs.</p>
 
 

@@ -38,8 +38,7 @@
 <h1 class="title is-3">State Is Not Data</h1>
 <h6 class="subtitle is-6 has-text-grey">September 25, 2019</h6>
 <p>Differentiating between data and state leads to cleaner code. What&rsquo;s the difference? When you instantiate and object with data you create an object with state.</p>
-
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">class</span> <span class="nx">User</span> <span class="p">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">User</span> <span class="p">{</span>
   <span class="nx">constructor</span><span class="p">(</span><span class="nx">dataJson</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">fname</span> <span class="o">=</span> <span class="nx">dataJson</span><span class="p">.</span><span class="nx">fname</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">lname</span> <span class="o">=</span> <span class="nx">dataJson</span><span class="p">.</span><span class="nx">lname</span><span class="p">;</span>
@@ -48,11 +47,8 @@
 
 <span class="nx">newUser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">({</span><span class="nx">fname</span><span class="o">:</span> <span class="s2">&#34;Jack&#34;</span><span class="p">,</span> <span class="nx">lname</span><span class="o">:</span> <span class="s2">&#34;Frost&#34;</span><span class="p">})</span>
 </code></pre></div>
-
 <p>The object <code>newUser</code> is an object with the state <code>fname = Jack</code> and <code>lname = Frost</code>. Data, in this example, is the json object.</p>
-
 <p>Let&rsquo;s say we need to generate the User&rsquo;s full name. Object oriented programming would have us add a method to <code>User</code> to concantenate <code>fname</code> and <code>lname</code>.  You can skip instantiating the object and just operate on the data like so:</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">jsonUser</span> <span class="o">=</span> <span class="p">{</span><span class="nx">fname</span><span class="o">:</span> <span class="s2">&#34;Jack&#34;</span><span class="p">,</span> <span class="nx">lname</span><span class="o">:</span> <span class="s2">&#34;Frost&#34;</span><span class="p">}</span>
 
 <span class="kd">function</span> <span class="nx">fullName</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
@@ -61,7 +57,6 @@
 
 <span class="nx">fullName</span><span class="p">(</span><span class="nx">jsonUser</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&#34;Jack Frost&#34;</span>
 </code></pre></div>
-
 <p><strong>Don&rsquo;t instantiate state just to operate on data.</strong></p>
 
 

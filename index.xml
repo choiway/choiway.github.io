@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Wayne Choi</title>
@@ -6,10 +6,20 @@
     <description>Recent content on Wayne Choi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Jan 2020 09:38:12 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jun 2020 09:38:19 -0700</lastBuildDate>
     
 	<atom:link href="https://choiway.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>80x Faster Rust Code</title>
+      <link>https://choiway.github.io/80x-faster-rust-code/</link>
+      <pubDate>Wed, 17 Jun 2020 09:38:19 -0700</pubDate>
+      
+      <guid>https://choiway.github.io/80x-faster-rust-code/</guid>
+      <description>80x faster Rust code?! Projecting security prices using brut force methods is expensive but some times it&amp;rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.
+The actual projections aren&amp;rsquo;t as interesting as the near 99% decrease in execution time it took to generate prices.</description>
+    </item>
     
     <item>
       <title>VIM-ify All Things with the Drop Alt Keyboard</title>

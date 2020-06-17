@@ -37,16 +37,10 @@
 
 <h1 class="title is-3">Gradual Types In Elixir</h1>
 <h6 class="subtitle is-6 has-text-grey">August 21, 2018</h6>
-
-
 <p>Elixir isn&rsquo;t a statically typed language but with structs, schemas, and pattern matching along with a robust, built-in test suite you have a toolbox that allows for <a href="https://en.wikipedia.org/wiki/Gradual_typing">gradual typing</a>.</p>
-
 <p>To illustrate gradual typing we&rsquo;ll walk through an example of creating a user login with the parameters <code>username</code>, <code>email_address</code> and <code>age</code>. For this example, we&rsquo;ll print a message with parameters: <code>username: #{params[&quot;username&quot;]}, email_address: #{params[&quot;email_address&quot;]}, next_year_age: #{next_year_age}</code> where <code>next_year_age</code> is <code>age</code> plus one.</p>
-
 <h2 id="with-just-params">With Just Params</h2>
-
 <p>If we were using the <a href="https://phoenixframework.org/">Phoenix Framework</a>, our controller request would consists of a map with strings as keys: <code>%{&quot;username&quot; =&gt; &quot;waldo&quot;, &quot;email_address&quot; =&gt; &quot;waldo@where.com&quot;, &quot;age&quot; =&gt; 12}</code>. To print our message, we would need to add 1 to age and parse each property from the map.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-elixir" data-lang="elixir">  <span class="n">defmodule</span> <span class="nc">Login</span> <span class="n">do</span>
 
     <span class="n">def</span> <span class="n">print</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="n">do</span>
@@ -55,15 +49,10 @@
       <span class="s2">&#34;username: </span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="s2">&#34;username&#34;</span><span class="p">]</span><span class="si">}</span><span class="s2">, email_address: </span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="s2">&#34;email_address&#34;</span><span class="p">]</span><span class="si">}</span><span class="s2">, next_year_age: </span><span class="si">#{</span><span class="n">next_year_age</span><span class="si">}</span><span class="s2">&#34;</span>
     <span class="n">end</span>
   <span class="n">end</span></code></pre></div>
-
 <p>Here we just pass in the map as <code>params</code>. The advantage of this method is that it&rsquo;s fast and readable. If our login payload changed there are a couple potential issues that a statically typed languages would catch at compile time. First, we can pass any type (a map, a string, an integer) into <code>print</code> as <code>params</code> so there is no contractual guarantee that <code>print</code> would receive a map with the properties <code>&quot;username&quot;</code>, <code>&quot;email_address&quot;</code>, or <code>&quot;age</code>. We also have no guarantee that <code>params[&quot;age&quot;]</code> is going to be a number. If <code>&quot;age&quot;</code> is passed in as a string we&rsquo;ll run into an <code>ArithmeticError</code> at runtime.</p>
-
 <p>Check <a href="https://github.com/choiway/gradual-typing-elixir/tree/01-login-with-params">here</a>.</p>
-
 <h2 id="with-a-login-struct">With a Login Struct</h2>
-
 <p>Elixir has <a href="https://elixir-lang.org/getting-started/structs.html">structs</a> which gives your some more structure. Let&rsquo;s define a <code>Login</code> struct and see how we can better our code.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-elixir" data-lang="elixir"><span class="n">defmodule</span> <span class="nc">Login</span> <span class="n">do</span>
 
   <span class="n">defstruct</span> <span class="ss">username</span><span class="p">:</span> <span class="n">nil</span><span class="p">,</span>  <span class="ss">age</span><span class="p">:</span> <span class="n">nil</span><span class="p">,</span> <span class="ss">email_address</span><span class="p">:</span> <span class="n">nil</span>
@@ -84,11 +73,8 @@
   <span class="n">...</span>
 
 <span class="n">end</span></code></pre></div>
-
-<p>Here we define a <code>Login</code> struct with the fields <code>username</code>, <code>age</code> and <code>email_address</code> and use <code>cast_login</code> to cast the params to a <code>Login</code> struct. Although we still don&rsquo;t have any guarantees about <code>Login</code>&rsquo;s properties&rsquo; types we get the guarantee that those properties are a part of Login. The biggest benefit of defining <code>Login</code> is that we can guarantee that <code>print</code> will only run if it receives the <code>Login</code> struct.</p>
-
+<p>Here we define a <code>Login</code> struct with the fields <code>username</code>, <code>age</code> and <code>email_address</code> and use <code>cast_login</code> to cast the params to a <code>Login</code> struct. Although we still don&rsquo;t have any guarantees about <code>Login</code>'s properties&rsquo; types we get the guarantee that those properties are a part of Login. The biggest benefit of defining <code>Login</code> is that we can guarantee that <code>print</code> will only run if it receives the <code>Login</code> struct.</p>
 <p>To help with the issue where any type can be passed into <code>cast_login</code>, we introduce <code>when</code> along with <code>is_map</code> which ensures that <code>cast_login</code> will run only if it receives a map. There are still no guarantees that we will receive the <code>username</code>, <code>email_address</code> and <code>age</code> properties but at least it prevents a random string from being passed in. If you try to pass in a string like <code>&quot;waldo&quot;</code>, you&rsquo;ll get a <code>FunctionClauseError</code> at runtime which looks like this in testing.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-elixir" data-lang="elixir">  <span class="mi">1</span><span class="p">)</span> <span class="n">test</span> <span class="n">print</span> <span class="n">login</span> <span class="n">with</span> <span class="n">valid</span> <span class="n">login</span> <span class="p">(</span><span class="nc">GradualTypesTest02</span><span class="p">)</span>
      <span class="n">test</span><span class="o">/</span><span class="mi">02</span><span class="n">_test</span><span class="o">.</span><span class="n">exs</span><span class="p">:</span><span class="mi">5</span>
      <span class="o">**</span> <span class="p">(</span><span class="nc">FunctionClauseError</span><span class="p">)</span> <span class="n">no</span> <span class="n">function</span> <span class="n">clause</span> <span class="n">matching</span> <span class="n">in</span> <span class="nc">Login</span><span class="o">.</span><span class="n">cast_login</span><span class="o">/</span><span class="mi">1</span>
@@ -106,13 +92,9 @@
      <span class="ss">stacktrace</span><span class="p">:</span>
        <span class="p">(</span><span class="n">gradual_types</span><span class="p">)</span> <span class="n">lib</span><span class="o">/</span><span class="n">login</span><span class="o">.</span><span class="n">ex</span><span class="p">:</span><span class="mi">8</span><span class="p">:</span> <span class="nc">Login</span><span class="o">.</span><span class="n">cast_login</span><span class="o">/</span><span class="mi">1</span>
        <span class="n">test</span><span class="o">/</span><span class="mi">02</span><span class="n">_test</span><span class="o">.</span><span class="n">exs</span><span class="p">:</span><span class="mi">7</span><span class="p">:</span> <span class="p">(</span><span class="n">test</span><span class="p">)</span></code></pre></div>
-
 <p>Code <a href="https://github.com/choiway/gradual-typing-elixir/tree/02-login-with-struct">here</a></p>
-
-<h2 id="with-betterlogin-ecto-schema">With BetterLogin Ecto.Schema</h2>
-
+<h2 id="with-betterlogin-ectoschema">With BetterLogin Ecto.Schema</h2>
 <p>Ecto is an Elixir dependency that facilitates database interaction. When coming from other ORMs in other frameworks, it took me a while to get my head around Ecto which take a more functional approach. One characteristic of Ecto that sets it apart from other ORMs is that it&rsquo;s components are loosely coupled. As a result, we can use <code>Ecto.Schema</code> to create &ldquo;types&rdquo; and help us cast our maps to them.</p>
-
 <div class="highlight"><pre class="chroma"><code class="language-elixir" data-lang="elixir"><span class="n">defmodule</span> <span class="nc">BetterLogin</span> <span class="n">do</span>
   <span class="na">@moduledoc</span> <span class="sh">&#34;&#34;&#34;
 </span><span class="sh">  Better login module
@@ -142,13 +124,9 @@
     <span class="si">}</span><span class="s2">&#34;</span>
   <span class="n">end</span>
 <span class="n">end</span></code></pre></div>
-
 <p>Here we introduce <code>Ecto.Schema</code> which is an additional dependency and not a part of the core of Elixir. <code>Ecto.Schema</code> is used to interact with your datastore but you can also use it as a <code>type</code> by using <code>embedded_schema</code> rather than <code>schema</code> when declaring the schema. Using <code>Ecto</code> also gives you access to <code>Ecto.Changeset</code> which allows you to cast and validate your <code>map</code> to the <code>schema</code>.</p>
-
 <p>Code <a href="https://github.com/choiway/gradual-typing-elixir/tree/03-login-with-schema">here</a></p>
-
 <h2 id="conclusion">Conclusion</h2>
-
 <p>Elixir is often dismissed out of hand for larger projects because it isn’t statically typed. However, it does have built in features that provide you with many of the guarantees you get in a statically typed language and help tame large projects. You rarely get the best of both worlds but with Elixir you get pretty close to getting the benefits of dynamic code while getting the guarantees of a statically typed language.</p>
 
 

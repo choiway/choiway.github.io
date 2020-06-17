@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" style="background-color: #fffff3">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/resources/gen/assets/syntax.css">
+  <style>
+    p {
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    li {
+      font-family: "Times New Roman", Times, serif;
+    }
+  </style>
+  <title>80x Faster Rust Code</title>
+</head>
+
+<body style="margin-bottom: 100px; padding: 8px;">
+  <div class="container" style="margin-bottom: 30px; margin-top: 10px">
+  <div class="level">
+    <div class="level-left">
+      <a href="/" class="title is-1 has-text-danger">W</a>
+    </div>
+    <div class="level-right">
+      
+    </div>
+  </div>
+</div>
+  <div class="container">
+    <div class="columns">
+      <div class="column is-two-thirds">
+        <main id="main" class="content">
+          
+
+<h1 class="title is-3">80x Faster Rust Code</h1>
+<h6 class="subtitle is-6 has-text-grey">June 17, 2020</h6>
+<h1 id="80x-faster-rust-code">80x faster Rust code?!</h1>
+<p>Projecting security prices using brut force methods is expensive but some times it&rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.</p>
+<p>The actual projections aren&rsquo;t as interesting as the near 99% decrease in execution time it took to generate prices. In Python it took <code>2 minutes and 3 seconds</code> to generate prices while in Rust it took a mere <code>1.5 seconds</code>.</p>
+<p>I only have a vague notion as to why the Rust implementation is so much faster. I consider myself a naive user of both languages and didn&rsquo;t implement any language level optimizations. I do use Pandas in the Python code and I have no idea if Pandas is optimized for certain types of computations and not for others.</p>
+<h2 id="projected-prices">Projected Prices</h2>
+<p>The algorithm used to project future prices generates a price for each projected day by randomly selecting a return from historical returns. The historical returns are categorized by 3-day volatility patterns based on the current day return relative to the standard deviation of returns over the previous 20 days.</p>
+<p>For each day projected day, we randomly select from a list of returns associated with a 3-day volatility pattern and multiply the current price by 1 + the return. For this analysis, we projected prices for 49 days 500 times resulting in 24,500 projected prices. In Python I used a dataframe for this look up while in Rust, I used a HashMap.</p>
+<h2 id="the-optimization">The Optimization</h2>
+<p>The part of the code of that was optmized in Rust does the following:</p>
+<ol>
+<li>Opens a csv file of historical returns</li>
+<li>Groups the returns to a hashmap where the key is tag pattern and the value is a list of returns</li>
+<li>Creates another hash map with the current day tag and a corresponding list of returns (This is used as a fallback if the tag pattern doesn&rsquo;t exist)</li>
+<li>For each generation it generates prices for the number of days and pushes it into an array of projected prices. The only significant calculation it performs here is one standard deviation calculation.</li>
+<li>Write the array of projected prices to a csv file</li>
+</ol>
+<p>Again, I didn&rsquo;t optimize code in either language. When writing the Rust code, I had an idea of data that I wanted to reference because I thought moves would be expensive and just did what the Rust compiler told me to until my code worked.</p>
+<p>Here&rsquo;s the primary Python function that got ported to Rust.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_projected_returns</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">ticker_symbol</span><span class="p">,</span> <span class="n">generations</span><span class="p">,</span> <span class="n">days_ahead</span><span class="p">,</span> <span class="n">expiry_date</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="n">tagged_returns_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;tag_pattern&#39;</span><span class="p">])[</span>
+        <span class="s1">&#39;next_ret&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">tag_returns_bin_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;tag&#39;</span><span class="p">])[</span><span class="s1">&#39;next_ret&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">last_20_returns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">20</span><span class="p">)[</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">projected_returns_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;generation&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;tag_pattern&#39;</span><span class="p">,</span> <span class="s1">&#39;ret&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">generations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;.&#34;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">current_tag_pattern</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;tag_pattern&#39;</span><span class="p">]</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;adj_close&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">days_ahead</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">next_ret_bin</span> <span class="o">=</span> <span class="n">get_ret_bin</span><span class="p">(</span>
+                <span class="n">current_tag_pattern</span><span class="p">,</span> <span class="n">tagged_returns_df</span><span class="p">,</span> <span class="n">tag_returns_bin_df</span><span class="p">)</span>
+            <span class="n">current_ret</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">next_ret_bin</span><span class="p">)</span>
+            <span class="n">current_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">last_20_returns</span><span class="p">)</span>
+            <span class="n">current_tag</span> <span class="o">=</span> <span class="n">tag_current_day</span><span class="p">(</span><span class="n">current_std</span><span class="p">,</span> <span class="n">current_ret</span><span class="p">)</span>
+            <span class="n">current_tag_pattern</span> <span class="o">=</span> <span class="n">create_new_tag_pattern</span><span class="p">(</span>
+                <span class="n">current_tag_pattern</span><span class="p">,</span> <span class="n">current_tag</span><span class="p">)</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">current_ret</span><span class="p">)</span>
+            <span class="n">last_20_returns</span> <span class="o">=</span> <span class="n">roll_list</span><span class="p">(</span><span class="n">last_20_returns</span><span class="p">,</span> <span class="n">current_ret</span><span class="p">)</span>
+            <span class="n">projected_returns_df</span> <span class="o">=</span> <span class="n">projected_returns_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;generation&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                    <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="s1">&#39;tag_pattern&#39;</span><span class="p">:</span> <span class="n">current_tag_pattern</span><span class="p">,</span>
+                    <span class="s1">&#39;ret&#39;</span><span class="p">:</span> <span class="n">current_ret</span><span class="p">,</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">price</span>
+                <span class="p">},</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">now_ts</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+    <span class="n">projected_returns_df</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_ts</span>
+    <span class="n">projected_returns_df</span><span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ticker_symbol</span>
+    <span class="n">projected_returns_df</span><span class="p">[</span><span class="s1">&#39;expiry_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">expiry_date</span><span class="p">)</span>
+    <span class="n">returns_path</span> <span class="o">=</span> <span class="s2">&#34;/tmp/</span><span class="si">%s</span><span class="s2">_projected_returns.csv&#34;</span> <span class="o">%</span> <span class="n">ticker_symbol</span>
+    <span class="n">projected_returns_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">returns_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></div><p>You can find the full python code in the <code>prog.py</code> file in this repository.</p>
+<p>To run the Rust binary, <code>clotho</code>, from the Python script I use <code>os.popen</code>. Once I had the Rust implementation working, I used the same function call and executed the Rust binary.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_projected_returns</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">ticker_symbol</span><span class="p">,</span> <span class="n">generations</span><span class="p">,</span> <span class="n">days_ahead</span><span class="p">,</span> <span class="n">expiry_date</span><span class="p">):</span>
+    <span class="n">command_string</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;RUST_LOG=debug clotho -f {filepath} -x {expiry_date} -t {ticker_symbol} -g {generations} -d {days}&#34;&#34;&#34;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">command_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">filepath</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span>
+        <span class="n">expiry_date</span><span class="o">=</span><span class="n">expiry_date</span><span class="p">,</span>
+        <span class="n">ticker_symbol</span><span class="o">=</span><span class="n">ticker_symbol</span><span class="p">,</span>
+        <span class="n">generations</span><span class="o">=</span><span class="n">generations</span><span class="p">,</span>
+        <span class="n">days</span><span class="o">=</span><span class="n">days_ahead</span>
+    <span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</code></pre></div><p>The Rust code is verbose so I&rsquo;m not including it here but here&rsquo;s a <a href="https://gist.github.com/choiway/a1bb9d92f5753a5b7781b3814e40ba77">gist</a>.</p>
+<h2 id="take-aways">Take Aways</h2>
+<p>I&rsquo;m still suprised by how much faster the Rust code given that it&rsquo;s not taking advantage of concurrency.</p>
+<p>I figure the read and write is constrained by the hard drive so I&rsquo;m guessing most of the gain comes from the look ups which probably benefits from manual memory management in Rust.</p>
+<p>Ignoring the fact that I don&rsquo;t know how I would optimize the Python code, I do wonder what the performance difference would be if I looked into optimizing the Python code before writing it in Rust.</p>
+<p>I really like working with Rust&rsquo;s ecosystem. Online documentation is good and Cargo is great.</p>
+<p>I used <code>peroxide</code> to calculate standard deviations but was surprised that there aren&rsquo;t more math/data science libraries for Rust.</p>
+<p>The <code>clap</code> Crate is awesome and really simplified the passing and parsing of commnand line arguments in Rust.</p>
+<p>The big takeaway is that, as someone with more of a finance background, I&rsquo;m pleasantly suprised by how Rust makes writing performant code accessible.</p>
+
+
+
+        </main>
+      </div>
+      <div class="column">
+        <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+        <script>
+          hbspt.forms.create({
+            portalId: "5108632",
+            formId: "c5eab82b-81e3-4acc-bfb3-e40cee3f9da3"
+          });
+        </script>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
