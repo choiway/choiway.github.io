@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>80x Faster Rust Code</title>
+      <title>80x Faster Rust Code?!</title>
       <link>https://choiway.github.io/80x-faster-rust-code/</link>
       <pubDate>Wed, 17 Jun 2020 09:38:19 -0700</pubDate>
       
       <guid>https://choiway.github.io/80x-faster-rust-code/</guid>
-      <description>80x faster Rust code?! Projecting security prices using brut force methods is expensive but some times it&amp;rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.
+      <description>Projecting security prices using brut force methods is expensive but some times it&amp;rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.
 The actual projections aren&amp;rsquo;t as interesting as the near 99% decrease in execution time it took to generate prices.</description>
     </item>
     

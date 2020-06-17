@@ -15,7 +15,7 @@
       font-family: "Times New Roman", Times, serif;
     }
   </style>
-  <title>80x Faster Rust Code</title>
+  <title>80x Faster Rust Code?!</title>
 </head>
 
 <body style="margin-bottom: 100px; padding: 8px;">
@@ -30,15 +30,13 @@
   </div>
 </div>
   <div class="container">
-    <div class="columns">
-      <div class="column is-two-thirds">
-        <main id="main" class="content">
-          
-
-<h1 class="title is-3">80x Faster Rust Code</h1>
-<h6 class="subtitle is-6 has-text-grey">June 17, 2020</h6>
-<h1 id="80x-faster-rust-code">80x faster Rust code?!</h1>
-<p>Projecting security prices using brut force methods is expensive but some times it&rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.</p>
+    <main id="main" class="content">
+      
+<div class="columns">
+  <div class="column is-two-thirds">
+    <h1 class="title is-3">80x Faster Rust Code?!</h1>
+    <h6 class="subtitle is-6 has-text-grey">June 17, 2020</h6>
+    <p>Projecting security prices using brut force methods is expensive but some times it&rsquo;s the only way to satisfy a curiousity. I was curious about how current volatility would affect future prices so I wrote a Python script to project Apple stock prices. After prototyping the algorithm in Python, I optmized the price generation part of the code in Rust.</p>
 <p>The actual projections aren&rsquo;t as interesting as the near 99% decrease in execution time it took to generate prices. In Python it took <code>2 minutes and 3 seconds</code> to generate prices while in Rust it took a mere <code>1.5 seconds</code>.</p>
 <p>I only have a vague notion as to why the Rust implementation is so much faster. I consider myself a naive user of both languages and didn&rsquo;t implement any language level optimizations. I do use Pandas in the Python code and I have no idea if Pandas is optimized for certain types of computations and not for others.</p>
 <h2 id="projected-prices">Projected Prices</h2>
@@ -113,21 +111,10 @@
 <p>The <code>clap</code> Crate is awesome and really simplified the passing and parsing of commnand line arguments in Rust.</p>
 <p>The big takeaway is that, as someone with more of a finance background, I&rsquo;m pleasantly suprised by how Rust makes writing performant code accessible.</p>
 
+  </div>
+</div>
 
-
-        </main>
-      </div>
-      <div class="column">
-        <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
-        <script>
-          hbspt.forms.create({
-            portalId: "5108632",
-            formId: "c5eab82b-81e3-4acc-bfb3-e40cee3f9da3"
-          });
-        </script>
-      </div>
-    </div>
-
+    </main>
   </div>
 </body>
 
